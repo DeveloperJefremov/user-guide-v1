@@ -1,0 +1,5 @@
+.FirstSideBar {
+	display: grid;
+	border-right: 1px solid black;
+	height: 100%;
+}
