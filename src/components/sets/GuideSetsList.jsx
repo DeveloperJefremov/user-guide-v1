@@ -1,3 +1,4 @@
+import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 import mockData, { MockGuideSets } from '../../data/MockData';
 import Button from '../../UI/Button';
@@ -107,23 +108,31 @@ export default function GuideSetsList() {
 			</header>
 
 			<ul className={styles.guideSetsList__setsList}>
-				{guideSetsList.map((guideSet, index) => (
-					<li className={styles.fontList} key={guideSet.id}>
-						<article key={guideSet.id || `set-${index}`}>
-							<GuideSet
-								handleEditSet={() => handleEditSet(guideSet.id)}
-								handleDeleteSet={() => handleDeleteSet(guideSet.id)}
-								mode={mode}
-								isGuideModalOpen={isGuideModalOpen}
-								onModeChange={newMode => setMode(newMode)}
-								onLaunchSet={() => handleLaunchSet(guideSet.id)}
-								activeGuideSetId={activeGuideSetId}
-								setGuideSetsList={setGuideSetsList}
-								guideSet={guideSet}
-							/>
-						</article>
-					</li>
-				))}
+				<Reorder.Group values={guideSetsList} onReorder={setGuideSetsList}>
+					{guideSetsList.map((guideSet, index) => (
+						<Reorder.Item
+							value={guideSet}
+							className={styles.fontList}
+							key={guideSet.id}
+						>
+							{/* <li className={styles.fontList} key={guideSet.id}> */}
+							<article key={guideSet.id || `set-${index}`}>
+								<GuideSet
+									handleEditSet={() => handleEditSet(guideSet.id)}
+									handleDeleteSet={() => handleDeleteSet(guideSet.id)}
+									mode={mode}
+									isGuideModalOpen={isGuideModalOpen}
+									onModeChange={newMode => setMode(newMode)}
+									onLaunchSet={() => handleLaunchSet(guideSet.id)}
+									activeGuideSetId={activeGuideSetId}
+									setGuideSetsList={setGuideSetsList}
+									guideSet={guideSet}
+								/>
+							</article>
+							{/* </li> */}
+						</Reorder.Item>
+					))}
+				</Reorder.Group>
 			</ul>
 		</section>
 	);
