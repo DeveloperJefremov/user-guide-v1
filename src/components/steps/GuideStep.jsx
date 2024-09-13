@@ -40,11 +40,7 @@ export default function GuideStep({
 				onDisplayChange={displayHandler}
 				step={step}
 			/>
-			<GuideStepBody
-				isShownStep={isShownStep}
-				step={step}
-				// handleImgCheckboxChange={handleImgCheckboxChange}
-			/>
+			<GuideStepBody isShownStep={isShownStep} step={step} />
 			<GuideStepFooter isShownStep={isShownStep} />
 		</section>
 	);

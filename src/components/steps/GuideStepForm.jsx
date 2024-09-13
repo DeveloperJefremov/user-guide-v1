@@ -24,10 +24,9 @@ export default function GuideStepForm({
 
 	// Обновляем форму при изменении начальных данных
 	useEffect(() => {
-		setFormData(initialFormData);
+		setFormData(initialFormData ?? obj);
 	}, [initialFormData]);
 
-	// Обрабатываем изменения формы
 	const handleInputChange = e => {
 		const { name, value, type, checked } = e.target;
 		const updatedFormData = {
@@ -72,61 +71,63 @@ export default function GuideStepForm({
 	};
 
 	return (
-		<form className={styles.guideStepForm}>
-			<label htmlFor='title'> Title:</label>
-			<input
-				id='title'
-				className={styles.input}
-				type='text'
-				name='title'
-				value={formData.title}
-				onChange={handleInputChange}
-				disabled={mode !== 'create' && mode !== 'edit'}
-			/>
+		<div className={styles.guideStepForm}>
+			<form className={styles.stepBodyContent__form}>
+				<label htmlFor='title'> Title:</label>
+				<input
+					id='title'
+					className={styles.input}
+					type='text'
+					name='title'
+					value={formData.title}
+					onChange={handleInputChange}
+					disabled={mode !== 'create' && mode !== 'edit'}
+				/>
 
-			<label htmlFor='order'>Order:</label>
-			<input
-				id='order'
-				className={styles.input}
-				type='number'
-				name='order'
-				value={formData.order}
-				onChange={handleInputChange}
-				disabled={mode !== 'create' && mode !== 'edit'}
-			/>
+				<label htmlFor='order'>Order:</label>
+				<input
+					id='order'
+					className={styles.input}
+					type='number'
+					name='order'
+					value={formData.order}
+					onChange={handleInputChange}
+					disabled={mode !== 'create' && mode !== 'edit'}
+				/>
 
-			<label htmlFor='description'>Description:</label>
-			<textarea
-				id='description'
-				className={styles.textarea}
-				name='description'
-				value={formData.description}
-				onChange={handleInputChange}
-				disabled={mode !== 'create' && mode !== 'edit'}
-			/>
+				<label htmlFor='description'>Description:</label>
+				<textarea
+					id='description'
+					className={styles.textarea}
+					name='description'
+					value={formData.description}
+					onChange={handleInputChange}
+					disabled={mode !== 'create' && mode !== 'edit'}
+				/>
 
-			<label htmlFor='pageUrl'>Page URL:</label>
-			<input
-				id='pageUrl'
-				className={styles.input}
-				name='pageUrl'
-				value={formData.pageUrl}
-				onChange={handleInputChange}
-				disabled={mode !== 'create' && mode !== 'edit'}
-			/>
+				<label htmlFor='pageUrl'>Page URL:</label>
+				<input
+					id='pageUrl'
+					className={styles.input}
+					name='pageUrl'
+					value={formData.pageUrl}
+					onChange={handleInputChange}
+					disabled={mode !== 'create' && mode !== 'edit'}
+				/>
 
-			<label htmlFor='elementId'>Element ID:</label>
-			<input
-				id='elementId'
-				className={styles.input}
-				type='text'
-				name='elementId'
-				value={formData.elementId}
-				onChange={handleInputChange}
-				disabled={mode !== 'create' && mode !== 'edit'}
-			/>
+				<label htmlFor='elementId'>Element ID:</label>
+				<input
+					id='elementId'
+					className={styles.input}
+					type='text'
+					name='elementId'
+					value={formData.elementId}
+					onChange={handleInputChange}
+					disabled={mode !== 'create' && mode !== 'edit'}
+				/>
+			</form>
 
-			<fieldset>
+			<fieldset className={styles.stepBodyContent__image}>
 				<legend>Image Settings</legend>
 				<label htmlFor='imgChecked'>Image:</label>
 				<input
@@ -180,6 +181,6 @@ export default function GuideStepForm({
 					Save
 				</Button>
 			</div>
-		</form>
+		</div>
 	);
 }

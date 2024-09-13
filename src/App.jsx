@@ -1,4 +1,5 @@
 import './App.css';
+import './styles/global.css';
 
 import FirstSideBar from './layout/FirstSideBar';
 import MainContent from './layout/MainContent';

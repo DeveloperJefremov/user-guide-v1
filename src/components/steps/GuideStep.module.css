@@ -15,18 +15,20 @@
 .stepBodyContent__container {
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-start;
-	gap: 10px;
+	padding: 50px 200px 50px 200px;
+
+	/* align-items: flex-start; */
+	/* gap: 10px; */
 }
 .stepBodyContent__form {
-	flex: 0 1 50%; /* Фиксированная ширина для поля изображения, можно изменить значение */
+	flex: 0 1 500px; /* Фиксированная ширина для поля изображения, можно изменить значение */
 	display: flex;
 	flex-direction: column;
 }
 
 .stepBodyContent__image {
 	display: flex;
-	width: 50%;
+	width: 500px;
 	flex-direction: column;
 }
 .stepDetails label {

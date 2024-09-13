@@ -1,7 +1,7 @@
 import GuideSetsList from '../components/sets/GuideSetsList';
 import Button from '../UI/Button';
-import styles from './MainContent.module.css';
 
+import styles from './MainContent.module.css';
 const MainContentHeader = ({ title, description }) => {
 	return (
 		<header className={styles.mainHeader}>
