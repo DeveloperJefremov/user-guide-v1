@@ -24,9 +24,6 @@
 .guideStepsList__stepsList {
 	padding-right: 40px;
 }
-.fontList {
-	list-style: none;
-}
 
 .highlight {
 	outline: 2px solid rgb(132, 0, 255);

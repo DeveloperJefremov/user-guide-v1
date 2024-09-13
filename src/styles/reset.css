@@ -5,3 +5,7 @@ body {
 	height: 100%;
 	box-sizing: border-box;
 }
+ol,
+ul {
+	list-style: none;
+}

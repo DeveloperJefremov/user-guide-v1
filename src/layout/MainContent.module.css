@@ -27,11 +27,11 @@
 	line-height: 1.5;
 }
 
-.mainHeader__loginButton {
+/* .mainHeader__loginButton {
 	position: absolute;
 	top: 20px;
 	right: 20px;
-}
+} */
 
 .mainBody {
 	/* display: flex; */

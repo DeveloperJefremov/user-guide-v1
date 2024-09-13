@@ -97,7 +97,7 @@ const GuideStepBody = ({
 	} ${!isShownStep ? styles.folded : ''}`;
 
 	return (
-		<main className={cssClassList}>
+		<section className={cssClassList}>
 			<article className={styles.stepBodyContent}>
 				<div className={styles.stepBodyContent__container}>
 					<form className={styles.stepBodyContent__form}>
@@ -178,7 +178,7 @@ const GuideStepBody = ({
 					)}
 				</div>
 			</article>
-		</main>
+		</section>
 	);
 };
 

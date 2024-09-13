@@ -7,13 +7,13 @@ const MainContentHeader = ({ title, description }) => {
 		<header className={styles.mainHeader}>
 			<h1 className={styles.mainHeader__title}>{title}</h1>
 			<p className={styles.mainHeader__text}>{description}</p>
-			<Button
+			{/* <Button
 				size='lg'
 				variant='lightGrey'
 				className={styles.mainHeader__loginButton}
 			>
 				Login as admin
-			</Button>
+			</Button> */}
 		</header>
 	);
 };

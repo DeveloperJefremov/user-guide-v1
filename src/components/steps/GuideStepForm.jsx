@@ -4,14 +4,15 @@ import Button from '../../UI/Button';
 import styles from './GuideStepForm.module.css';
 
 export default function GuideStepForm({
-	formData: initialFormData,
+	data,
 	mode,
 	onChange,
 	handleSaveStep,
 	handleCancel,
 }) {
-	const obj = {
+	const initialData = {
 		title: '',
+		order: '',
 		description: '',
 		pageUrl: '',
 		elementId: '',
@@ -20,12 +21,14 @@ export default function GuideStepForm({
 		imgHeight: 0,
 		imageUrl: '',
 	};
-	const [formData, setFormData] = useState(initialFormData ?? obj);
+	const [formData, setFormData] = useState(
+		mode === 'edit' ? data : initialData
+	);
 
-	// Обновляем форму при изменении начальных данных
-	useEffect(() => {
-		setFormData(initialFormData ?? obj);
-	}, [initialFormData]);
+	// // Обновляем форму при изменении начальных данных
+	// useEffect(() => {
+	// 	setFormData(data ?? initialData);
+	// }, [data]);
 
 	const handleInputChange = e => {
 		const { name, value, type, checked } = e.target;
@@ -69,6 +72,9 @@ export default function GuideStepForm({
 		setFormData(updatedData);
 		onChange(updatedData); // Передаем изменения в родительский компонент
 	};
+	useEffect(() => {
+		console.log(formData);
+	}, [formData]);
 
 	return (
 		<div className={styles.guideStepForm}>

@@ -1,9 +1,22 @@
+import { Reorder } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Button from '../../UI/Button';
 import Modal from '../../UI/Modal';
 import GuideStep from './GuideStep';
 import GuideStepForm from './GuideStepForm';
 import styles from './GuideStepsList.module.css';
+
+const initialFormData = {
+	title: '',
+	description: '',
+	order: '',
+	pageUrl: '',
+	elementId: '',
+	imgChecked: false,
+	imgWidth: 0,
+	imgHeight: 0,
+	imageUrl: '',
+};
 
 export default function GuideStepsList({
 	mode,
@@ -18,16 +31,7 @@ export default function GuideStepsList({
 	const [currentStepIndex, setCurrentStepIndex] = useState(0); // Для хранения индекса редактируемого шага
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 }); // Позиция модального окна
 
-	const [formData, setFormData] = useState({
-		title: '',
-		description: '',
-		pageUrl: '',
-		elementId: '',
-		imgChecked: false,
-		imgWidth: 0,
-		imgHeight: 0,
-		imageUrl: '',
-	});
+	const [formData, setFormData] = useState(initialFormData);
 
 	useEffect(() => {
 		console.log('index - ', currentStepIndex);
@@ -35,16 +39,7 @@ export default function GuideStepsList({
 
 	// Создание нового шага
 	const handleCreateStep = () => {
-		setFormData({
-			title: '',
-			description: '',
-			pageUrl: '',
-			elementId: '',
-			imgChecked: false,
-			imgWidth: 0,
-			imgHeight: 0,
-			imageUrl: '',
-		}); // Очищаем данные формы
+		setFormData(initialFormData); // Очищаем данные формы
 		onModeChange('create'); // Устанавливаем режим создания
 		setIsModalOpen(true); // Открываем модальное окно
 	};
@@ -52,33 +47,53 @@ export default function GuideStepsList({
 	// Сохранение нового шага
 	const handleSaveStep = () => {
 		if (mode === 'create') {
-			// Создаем новый шаг с уникальным ID
+			// Проверка на дублирование order
+			const isDuplicateOrder = steps.some(
+				step => step.order === formData.order
+			);
+
+			let updatedSteps = [...steps];
+			if (isDuplicateOrder) {
+				// Если дублируется, сдвигаем все шаги с таким order и выше
+				updatedSteps = steps.map(step =>
+					step.order >= formData.order
+						? { ...step, order: step.order + 1 }
+						: step
+				);
+			}
+
 			const newStep = {
 				...formData,
-				id: String(steps.length + 1), // Генерируем новый ID
-				order: steps.length + 1, // Устанавливаем порядок
+				id: String(steps.length + 1),
+				order: Number(formData.order),
 			};
 
-			// Обновляем состояние шагов
-			setSteps([...steps, newStep]);
-
-			// Закрываем модальное окно и сбрасываем форму
+			setSteps([...updatedSteps, newStep].sort((a, b) => a.order - b.order)); // Сортируем по order
 			setIsModalOpen(false);
-			setFormData({
-				title: '',
-				description: '',
-				pageUrl: '',
-				elementId: '',
-				imgChecked: false,
-				imgWidth: 0,
-				imgHeight: 0,
-				imageUrl: '',
-			});
+			setFormData(initialFormData);
 		} else if (mode === 'edit') {
 			const updatedSteps = steps.map((step, index) =>
 				index === currentStepIndex ? { ...step, ...formData } : step
 			);
-			setSteps(updatedSteps);
+
+			// Проверка на дублирование order
+			const isDuplicateOrder = updatedSteps.some(
+				(step, index) =>
+					step.order === formData.order && index !== currentStepIndex
+			);
+
+			if (isDuplicateOrder) {
+				// Если дублируется, сдвигаем все шаги с таким order и выше
+				const reorderedSteps = updatedSteps.map(step =>
+					step.order >= formData.order && step.id !== steps[currentStepIndex].id
+						? { ...step, order: step.order - 1 }
+						: step
+				);
+
+				setSteps(reorderedSteps.sort((a, b) => a.order - b.order)); // Сортируем по order
+			} else {
+				setSteps(updatedSteps.sort((a, b) => a.order - b.order)); // Сортируем по order
+			}
 
 			setIsModalOpen(false);
 			setCurrentStepIndex(0);
@@ -112,16 +127,7 @@ export default function GuideStepsList({
 
 	const handleCancel = () => {
 		setIsModalOpen(false); // Закрываем окно
-		setFormData({
-			title: '',
-			description: '',
-			pageUrl: '',
-			elementId: '',
-			imgChecked: false,
-			imgWidth: 0,
-			imgHeight: 0,
-			imageUrl: '',
-		});
+		setFormData(initialFormData);
 		setCurrentStepIndex(0); // Сбрасываем текущий индекс
 		onModeChange('display');
 	};
@@ -190,8 +196,8 @@ export default function GuideStepsList({
 					{isModalOpen && (
 						<Modal onClick={handleCancel}>
 							<GuideStepForm
+								data={formData}
 								mode={mode}
-								formData={formData}
 								onChange={handleFormChange}
 								handleSaveStep={handleSaveStep}
 								handleCancel={handleCancel}
@@ -203,18 +209,39 @@ export default function GuideStepsList({
 				<h2>Guide Steps List:</h2>
 			</header>
 			<ul className={styles.guideStepsList__stepsList}>
-				{steps.map((step, stepIndex) => {
-					return (
-						<li className={styles.fontList} key={step.id}>
-							<GuideStep
-								key={`step-${step.id}`}
-								step={step}
-								handleEditStep={() => handleEditStep(stepIndex)}
-								handleDeleteStep={() => handleDeleteStep(stepIndex)}
-							/>
-						</li>
-					);
-				})}
+				<Reorder.Group
+					values={steps}
+					onReorder={steps => {
+						const updatedSteps = steps.map((step, index) => {
+							const newStep = {
+								...step,
+								order: index + 1,
+							};
+							return newStep;
+						});
+
+						setSteps(updatedSteps);
+					}}
+				>
+					{steps.map((step, stepIndex) => {
+						return (
+							<Reorder.Item
+								key={step.id}
+								value={step}
+								className={styles.fontList}
+							>
+								{/* <li className={styles.fontList}> */}
+								<GuideStep
+									// key={`step-${step.id}`}
+									step={step}
+									handleEditStep={() => handleEditStep(stepIndex)}
+									handleDeleteStep={() => handleDeleteStep(stepIndex)}
+								/>
+								{/* </li> */}
+							</Reorder.Item>
+						);
+					})}
+				</Reorder.Group>
 			</ul>
 
 			{isGuideModalOpen &&
