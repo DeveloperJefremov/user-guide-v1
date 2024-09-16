@@ -1,6 +1,6 @@
 import { Reorder } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import mockData, { MockGuideSets } from '../../data/MockData';
+import MockGuideSets from '../../data/MockData';
 import Button from '../../UI/Button';
 import Modal from '../../UI/Modal';
 import GuideSet from './GuideSet';

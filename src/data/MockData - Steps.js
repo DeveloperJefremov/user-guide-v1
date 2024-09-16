@@ -1,7 +1,6 @@
 export const MockGuideSteps = [
 	{
 		id: 1,
-
 		steps: [
 			{
 				id: '1',
@@ -33,7 +32,7 @@ export const MockGuideSteps = [
 		id: 2,
 		steps: [
 			{
-				id: '3',
+				id: '1',
 				order: 1,
 				title: 'Step 2: Setup',
 				description: 'Setup your environment with the following instructions.',
@@ -46,7 +45,7 @@ export const MockGuideSteps = [
 					'https://images.dog.ceo/breeds/spaniel-sussex/n02102480_6569.jpg',
 			},
 			{
-				id: '4',
+				id: '2',
 				order: 2,
 				title: 'Step 5: Verification',
 
