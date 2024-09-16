@@ -22,14 +22,9 @@ export default function GuideStepForm({
 		imageUrl: '',
 	};
 
-	const [formData, setFormData] = useState(() => {
-		const savedData = localStorage.getItem('formData');
-		return savedData
-			? JSON.parse(savedData)
-			: mode === 'edit'
-			? data
-			: initialData;
-	});
+	const [formData, setFormData] = useState(
+		mode === 'edit' ? data : initialData
+	);
 
 	useEffect(() => {
 		if (mode === 'edit' || mode === 'create') {
@@ -50,7 +45,7 @@ export default function GuideStepForm({
 		};
 		setFormData(updatedFormData);
 		onChange(updatedFormData); // Передаем изменения в родительский компонент
-		localStorage.setItem('formData', JSON.stringify(updatedFormData));
+		// localStorage.setItem('formData', JSON.stringify(updatedFormData));
 	};
 
 	// Обработка изменения checkbox для изображения
@@ -84,7 +79,7 @@ export default function GuideStepForm({
 
 		setFormData(updatedData);
 		onChange(updatedData); // Передаем изменения в родительский компонент
-		localStorage.setItem('formData', JSON.stringify(updatedData));
+		// localStorage.setItem('formData', JSON.stringify(updatedData));
 	};
 
 	return (

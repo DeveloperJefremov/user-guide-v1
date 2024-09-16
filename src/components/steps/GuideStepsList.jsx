@@ -33,6 +33,9 @@ export default function GuideStepsList({
 
 	const [formData, setFormData] = useState(initialFormData);
 
+	// Функция для генерации уникального ключа для каждого шага
+	const getEditFormDataKey = stepId => `editFormData-${stepId}`;
+
 	useEffect(() => {
 		if (isModalOpen) {
 			if (mode === 'create') {
@@ -44,20 +47,27 @@ export default function GuideStepsList({
 					setFormData(initialFormData);
 				}
 			} else if (mode === 'edit') {
-				// Загружаем данные для режима "edit" из localStorage
-				const savedEditData = localStorage.getItem('editFormData');
+				const currentStep = steps[currentStepIndex];
+				const editDataKey = getEditFormDataKey(currentStep.id);
+
+				// Загружаем данные для редактируемого шага из localStorage
+				const savedEditData = localStorage.getItem(editDataKey);
 				if (savedEditData) {
 					setFormData(JSON.parse(savedEditData));
+				} else {
+					setFormData(currentStep);
 				}
 			}
 		}
-	}, [isModalOpen, mode]);
+	}, [isModalOpen, mode, currentStepIndex, steps]);
 
 	const clearLocalStorage = () => {
 		if (mode === 'create') {
 			localStorage.removeItem('createFormData');
 		} else if (mode === 'edit') {
-			localStorage.removeItem('editFormData');
+			const currentStep = steps[currentStepIndex];
+			const editDataKey = getEditFormDataKey(currentStep.id);
+			localStorage.removeItem(editDataKey);
 		}
 	};
 
@@ -95,6 +105,7 @@ export default function GuideStepsList({
 			setSteps([...updatedSteps, newStep].sort((a, b) => a.order - b.order)); // Сортируем по order
 			setIsModalOpen(false);
 			setFormData(initialFormData);
+			clearLocalStorage(); // Очищаем данные для режима "create"
 		} else if (mode === 'edit') {
 			const updatedSteps = steps.map((step, index) =>
 				index === currentStepIndex ? { ...step, ...formData } : step
@@ -121,14 +132,18 @@ export default function GuideStepsList({
 
 			setIsModalOpen(false);
 			setCurrentStepIndex(0);
+			clearLocalStorage(); // Очищаем данные для режима "edit"
 		}
-		clearLocalStorage();
 	};
 
 	// Удаление шага
 	const handleDeleteStep = stepIndex => {
+		const stepToDelete = steps[stepIndex];
 		const updatedSteps = steps.filter((_, index) => index !== stepIndex);
 		setSteps(updatedSteps); // Обновляем шаги в состоянии
+
+		// Удаляем данные из localStorage для удаленного шага
+		localStorage.removeItem(getEditFormDataKey(stepToDelete.id));
 
 		// Обновляем currentStepIndex, чтобы не выйти за пределы массива
 		if (currentStepIndex >= updatedSteps.length) {
@@ -138,6 +153,15 @@ export default function GuideStepsList({
 
 	const handleFormChange = newFormData => {
 		setFormData(newFormData); // Обновляем данные формы
+
+		// Сохраняем данные в localStorage для текущего режима
+		if (mode === 'create') {
+			localStorage.setItem('createFormData', JSON.stringify(newFormData));
+		} else if (mode === 'edit') {
+			const currentStep = steps[currentStepIndex];
+			const editDataKey = getEditFormDataKey(currentStep.id);
+			localStorage.setItem(editDataKey, JSON.stringify(newFormData));
+		}
 	};
 
 	const handleEditStep = stepIndex => {
@@ -149,7 +173,6 @@ export default function GuideStepsList({
 	};
 
 	// Сохранение нового шага или редактирование существующего
-
 	const handleCancel = () => {
 		setIsModalOpen(false); // Закрываем окно
 		setFormData(initialFormData);
@@ -180,7 +203,7 @@ export default function GuideStepsList({
 			const rect = element.getBoundingClientRect(); // Получаем координаты элемента
 			setModalPosition({
 				top: rect.top + window.scrollY,
-				left: rect.left + window.scrollX + rect.width + 10, // Модальное окно справа от элемента
+				left: rect.left + window.scrollX + rect.width + 30, // Модальное окно справа от элемента
 			});
 		}
 	};
@@ -258,7 +281,6 @@ export default function GuideStepsList({
 							>
 								{/* <li className={styles.fontList}> */}
 								<GuideStep
-									// key={`step-${step.id}`}
 									step={step}
 									handleEditStep={() => handleEditStep(stepIndex)}
 									handleDeleteStep={() => handleDeleteStep(stepIndex)}

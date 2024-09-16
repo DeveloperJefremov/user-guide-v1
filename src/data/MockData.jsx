@@ -37,7 +37,7 @@ export const MockGuideSets = [
 		setFooter: 'Set footer 2',
 		setBody: [
 			{
-				id: '1',
+				id: '3',
 				order: 1,
 				title: 'Step 2: Setup',
 
@@ -51,7 +51,7 @@ export const MockGuideSets = [
 					'https://images.dog.ceo/breeds/spaniel-sussex/n02102480_6569.jpg',
 			},
 			{
-				id: '2',
+				id: '4',
 				order: 2,
 				title: 'Step 5: Verification',
 
