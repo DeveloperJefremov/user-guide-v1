@@ -34,8 +34,32 @@ export default function GuideStepsList({
 	const [formData, setFormData] = useState(initialFormData);
 
 	useEffect(() => {
-		console.log('index - ', currentStepIndex);
-	}, [currentStepIndex]);
+		if (isModalOpen) {
+			if (mode === 'create') {
+				// Загружаем данные для режима "create" из localStorage
+				const savedCreateData = localStorage.getItem('createFormData');
+				if (savedCreateData) {
+					setFormData(JSON.parse(savedCreateData));
+				} else {
+					setFormData(initialFormData);
+				}
+			} else if (mode === 'edit') {
+				// Загружаем данные для режима "edit" из localStorage
+				const savedEditData = localStorage.getItem('editFormData');
+				if (savedEditData) {
+					setFormData(JSON.parse(savedEditData));
+				}
+			}
+		}
+	}, [isModalOpen, mode]);
+
+	const clearLocalStorage = () => {
+		if (mode === 'create') {
+			localStorage.removeItem('createFormData');
+		} else if (mode === 'edit') {
+			localStorage.removeItem('editFormData');
+		}
+	};
 
 	// Создание нового шага
 	const handleCreateStep = () => {
@@ -98,6 +122,7 @@ export default function GuideStepsList({
 			setIsModalOpen(false);
 			setCurrentStepIndex(0);
 		}
+		clearLocalStorage();
 	};
 
 	// Удаление шага
@@ -130,6 +155,7 @@ export default function GuideStepsList({
 		setFormData(initialFormData);
 		setCurrentStepIndex(0); // Сбрасываем текущий индекс
 		onModeChange('display');
+		clearLocalStorage();
 	};
 
 	// Переход на следующий шаг
