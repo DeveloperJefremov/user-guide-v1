@@ -7,6 +7,9 @@
 
 	/* margin-right: 50px; */
 }
+.guideSetsList__setsList {
+	padding-left: 0;
+}
 
 .guideSetsList__header {
 	/* border: 1px solid black; */

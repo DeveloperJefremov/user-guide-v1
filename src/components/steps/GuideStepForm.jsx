@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '../../UI/Button';
 
 import styles from './GuideStepForm.module.css';
@@ -72,9 +72,6 @@ export default function GuideStepForm({
 		setFormData(updatedData);
 		onChange(updatedData); // Передаем изменения в родительский компонент
 	};
-	useEffect(() => {
-		console.log(formData);
-	}, [formData]);
 
 	return (
 		<div className={styles.guideStepForm}>
