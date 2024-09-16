@@ -1,5 +1,5 @@
 import { Reorder } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import mockData, { MockGuideSets } from '../../data/MockData';
 import Button from '../../UI/Button';
 import Modal from '../../UI/Modal';
@@ -16,6 +16,32 @@ export default function GuideSetsList() {
 	const [activeGuideSetId, setActiveGuideSetId] = useState(null);
 	const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
 
+	useEffect(() => {
+		if (mode === 'create') {
+			const savedNewSetTitle = localStorage.getItem('newSetTitle');
+			if (savedNewSetTitle) {
+				setNewSetTitle(savedNewSetTitle);
+			}
+		} else if (mode === 'edit' && currentSetId) {
+			const savedEditSetTitle = localStorage.getItem(
+				`editSetTitle_${currentSetId}`
+			);
+			if (savedEditSetTitle) {
+				setNewSetTitle(savedEditSetTitle);
+			}
+		}
+	}, [mode, currentSetId]);
+
+	const handleTitleChange = newTitle => {
+		setNewSetTitle(newTitle);
+
+		if (mode === 'create') {
+			localStorage.setItem('newSetTitle', newTitle);
+		} else if (mode === 'edit') {
+			localStorage.setItem(`editSetTitle_${currentSetId}`, newTitle);
+		}
+	};
+
 	const handleCreateSet = () => {
 		setNewSetTitle('');
 		setMode('create');
@@ -26,7 +52,6 @@ export default function GuideSetsList() {
 		setIsGuideModalOpen(true);
 		setActiveGuideSetId(setId);
 		setMode('execute');
-		console.log('Launching set:', { mode });
 	};
 
 	const handleEditSet = id => {
@@ -59,6 +84,7 @@ export default function GuideSetsList() {
 				setBody: [], // Пустой body для нового набора
 			};
 			setGuideSetsList([...guideSetsList, newSet]);
+			localStorage.removeItem('newSetTitle'); // Удаляем данные из localStorage
 		} else if (mode === 'edit') {
 			// Обновляем существующий набор
 			const updatedGuideSetsList = guideSetsList.map(guideSet => {
@@ -71,6 +97,7 @@ export default function GuideSetsList() {
 				return guideSet;
 			});
 			setGuideSetsList(updatedGuideSetsList);
+			localStorage.removeItem(`editSetTitle_${currentSetId}`); // Удаляем данные из localStorage
 		}
 
 		setIsModalOpen(false);
@@ -80,6 +107,11 @@ export default function GuideSetsList() {
 	const handleCancel = () => {
 		setIsModalOpen(false);
 		setNewSetTitle('');
+		if (mode === 'create') {
+			localStorage.removeItem('newSetTitle');
+		} else if (mode === 'edit') {
+			localStorage.removeItem(`editSetTitle_${currentSetId}`);
+		}
 	};
 
 	return (
@@ -96,7 +128,7 @@ export default function GuideSetsList() {
 							<GuideSetHeaderForm
 								mode={mode}
 								title={newSetTitle}
-								onTitleChange={setNewSetTitle}
+								onTitleChange={handleTitleChange} // Используем обновленную функцию
 								onSave={handleSaveNewSet}
 								onCancel={handleCancel}
 							/>
@@ -115,7 +147,6 @@ export default function GuideSetsList() {
 							className={styles.fontList}
 							key={guideSet.id}
 						>
-							{/* <li className={styles.fontList} key={guideSet.id}> */}
 							<article key={guideSet.id || `set-${index}`}>
 								<GuideSet
 									handleEditSet={() => handleEditSet(guideSet.id)}
@@ -129,7 +160,6 @@ export default function GuideSetsList() {
 									guideSet={guideSet}
 								/>
 							</article>
-							{/* </li> */}
 						</Reorder.Item>
 					))}
 				</Reorder.Group>
